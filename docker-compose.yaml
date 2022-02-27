@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # database:
+  #   image: mcr.microsoft.com/mssql/server:2019-latest
+  #   container_name: camunda-database
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - SA_PASSWORD=p@ssw0rd
+  #     - MSSQL_PID=Developer
+  #   ports:
+  #     - "1434:1433"
+
+  camunda:
+    build: .
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./config/application.yaml:/usr/src/config/application.yaml
+
+    # environment:
+    #   - DB_DRIVER=com.microsoft.sqlserver.jdbc.SQLServerDriver
+    #   - DB_URL=jdbc:sqlserver://0.0.0.0:1433;databaseName=Camunda
+    #   - DB_USERNAME=sa
+    #   - DB_PASSWORD=p@ssw0rd
+    #   - WAIT_FOR=database:1433

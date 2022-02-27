@@ -1,0 +1,78 @@
+spring:
+  datasource:
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://10.99.5.199;databaseName=CamundaForMule
+    username: camundaadmin
+    password: Whatever@viriyah9
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  mail:
+    host: vmail.viriyah.co.th
+    port: 25
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: false
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+          starttls:
+            enable: false
+            require: false
+camunda.bpm:
+  admin-user:
+    id: demo
+    password: demo
+    firstName: Demo
+    lastName: Demo
+  filter:
+    create: All Tasks
+
+ecm:
+  ecmurl: https://vgateway.viriyah.co.th/filelibraryext/ws/Search
+  org: viriyahdev
+
+url:
+  base: http://hqcapi.viriyah.co.th #config
+  service:
+    policyinfo: https://vgateway.viriyah.co.th/cdata/CoreWSDBMotorDB_SpGetPolicyInfoForCamunda
+    policyinfoNonMotor: https://vgateway.viriyah.co.th/cdata/CoreWSDBMotorDB_SpGetPolicyInfoForCamundaNonMotor
+    pdf:
+      generate: ${url.base}/VIRGenerateDocumentGateway/api/Gateway
+      protect: ${url.base}/VIRSignDocument/api/SignToECM
+      sign: http://primekey.viriyah.co.th:8080/signserver/process
+      send:
+        online: http://10.99.5.174/Camunda_Service/uploadFile
+        email: https://api.viriyah.co.th/gw/api/general/message/v1/communication
+        sms: https://api.viriyah.co.th/gw/api/general/message/v1/communication
+        clientId: 894d5483dc104cf1bdc3d6cdbfc044e1
+        clientSecret: 19eeb881a5dd4187BD479960479EA52a
+    ecm:
+      ecmapi: https://vgateway.viriyah.co.th/filelibraryext/ws/Search
+      sharelinkapi: https://vgateway.viriyah.co.th/filelibraryext/shared-links
+      shortlinkdomain: https://vpol.co/
+      org: viriyah
+fixed:
+  body:
+    send:
+      online: N
+      email: N
+      sms: N
+  mail:
+    sendOn:
+      success: Y
+      failed: Y
+    from: camunda@viriyah.co.th
+    report: >
+      chakatponk@viriyah.co.th,
+      pakornk@viriyah.co.th,
+      weeraphotp@viriyah.co.th,
+      tanawut.b@allrightbox.com

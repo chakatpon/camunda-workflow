@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0z9bsc0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <bpmn:process id="Policy_Delivery" name="V2ForMule" isExecutable="true" camunda:versionTag="v2.0.1" camunda:historyTimeToLive="P7D">
+    <bpmn:startEvent id="StartStartEvent" name="Start">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="transactionId" label="Transaction Id" type="string" />
+          <camunda:formField id="class" label="Class" type="string" />
+          <camunda:formField id="subClass" label="Sub Class" type="string" />
+          <camunda:formField id="partner" label="Partner" type="string" />
+          <camunda:formField id="policyNumber" label="Policy Number" type="string" />
+          <camunda:formField id="email" label="Email" type="string" />
+          <camunda:formField id="mobile" label="Mobile" type="string" />
+          <camunda:formField id="pdfPassword" label="pdfPassword" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0z24t8x</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="ProcessSuccessEndEvent" name="Process Success">
+      <bpmn:incoming>Flow_0fd8o0u</bpmn:incoming>
+      <bpmn:incoming>Flow_0oirazi</bpmn:incoming>
+      <bpmn:incoming>Flow_0me4dlo</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:subProcess id="Activity_1b84wmq">
+      <bpmn:incoming>Flow_0hseaw9</bpmn:incoming>
+      <bpmn:incoming>Flow_0gwzze9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fd8o0u</bpmn:outgoing>
+      <bpmn:startEvent id="Event_135falg">
+        <bpmn:outgoing>Flow_09ssvzo</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:serviceTask id="GeneratePDFTask" name="Generate PDF" camunda:class="com.x10.viriyah.services.delegate.GeneratePdfDelegate">
+        <bpmn:incoming>Flow_09kz64u</bpmn:incoming>
+        <bpmn:outgoing>Flow_1ycoabf</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="ProtectPDFTask" name="Protect PDF" camunda:class="com.x10.viriyah.services.delegate.SignPdfDelegate">
+        <bpmn:incoming>Flow_1ycoabf</bpmn:incoming>
+        <bpmn:outgoing>Flow_1b1u4s9</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="SendPDFWithEmailTask" name="Send PDF with email" camunda:class="com.x10.viriyah.services.delegate.SendPdfWithEmail">
+        <bpmn:incoming>SendEmailSequenceFlow</bpmn:incoming>
+        <bpmn:outgoing>Flow_0c9fccc</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="SendPDFWithSMSTask" name="Send PDF with SMS" camunda:class="com.x10.viriyah.services.delegate.SendPdfWithSms">
+        <bpmn:incoming>SendSmsSequenceFlow</bpmn:incoming>
+        <bpmn:outgoing>Flow_04g9phv</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="SendPDFWithOnlineTask" name="Send PDF with Online" camunda:class="com.x10.viriyah.services.delegate.SendPdfWithOnline">
+        <bpmn:incoming>SendOnlineSequenceFlow</bpmn:incoming>
+        <bpmn:outgoing>Flow_1c8yd77</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:inclusiveGateway id="Gateway_AsyncBeforeDelivery" camunda:asyncBefore="true">
+        <bpmn:incoming>Flow_1b1u4s9</bpmn:incoming>
+        <bpmn:outgoing>SendOnlineSequenceFlow</bpmn:outgoing>
+        <bpmn:outgoing>SendEmailSequenceFlow</bpmn:outgoing>
+        <bpmn:outgoing>SendSmsSequenceFlow</bpmn:outgoing>
+        <bpmn:outgoing>Flow_0bf9t7q</bpmn:outgoing>
+      </bpmn:inclusiveGateway>
+      <bpmn:inclusiveGateway id="Gateway_0wogmd4">
+        <bpmn:incoming>Flow_1c8yd77</bpmn:incoming>
+        <bpmn:incoming>Flow_0c9fccc</bpmn:incoming>
+        <bpmn:incoming>Flow_04g9phv</bpmn:incoming>
+        <bpmn:incoming>Flow_0bf9t7q</bpmn:incoming>
+        <bpmn:outgoing>Flow_14cu9p7</bpmn:outgoing>
+      </bpmn:inclusiveGateway>
+      <bpmn:sequenceFlow id="SendEmailSequenceFlow" name="send email" sourceRef="Gateway_AsyncBeforeDelivery" targetRef="SendPDFWithEmailTask">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{sendEmail == 'Y'}</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_0c9fccc" sourceRef="SendPDFWithEmailTask" targetRef="Gateway_0wogmd4" />
+      <bpmn:sequenceFlow id="SendSmsSequenceFlow" name="send sms" sourceRef="Gateway_AsyncBeforeDelivery" targetRef="SendPDFWithSMSTask">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{sendSms == 'Y'}</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_04g9phv" sourceRef="SendPDFWithSMSTask" targetRef="Gateway_0wogmd4" />
+      <bpmn:sequenceFlow id="SendOnlineSequenceFlow" name="send online" sourceRef="Gateway_AsyncBeforeDelivery" targetRef="SendPDFWithOnlineTask">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{sendOnline == 'Y'}</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_1c8yd77" sourceRef="SendPDFWithOnlineTask" targetRef="Gateway_0wogmd4" />
+      <bpmn:sequenceFlow id="Flow_1ycoabf" sourceRef="GeneratePDFTask" targetRef="ProtectPDFTask" />
+      <bpmn:exclusiveGateway id="Gateway_03iff5p">
+        <bpmn:incoming>Flow_14cu9p7</bpmn:incoming>
+        <bpmn:outgoing>Flow_0791s37</bpmn:outgoing>
+        <bpmn:outgoing>Flow_0e54xg2</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:sequenceFlow id="Flow_14cu9p7" sourceRef="Gateway_0wogmd4" targetRef="Gateway_03iff5p" />
+      <bpmn:endEvent id="Event_1xzoibw">
+        <bpmn:incoming>Flow_0xm89bs</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0791s37" sourceRef="Gateway_03iff5p" targetRef="SendSuccessEmailTask">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{sendPdfError == null}</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_0e54xg2" sourceRef="Gateway_03iff5p" targetRef="Event_1sl2ebp">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{sendPdfError}</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:endEvent id="Event_1sl2ebp">
+        <bpmn:incoming>Flow_0e54xg2</bpmn:incoming>
+        <bpmn:errorEventDefinition id="ErrorEventDefinition_048g0mh" errorRef="Error_0ly2hcu" />
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0xm89bs" sourceRef="SendSuccessEmailTask" targetRef="Event_1xzoibw" />
+      <bpmn:serviceTask id="SendSuccessEmailTask" name="Send Success Email" camunda:class="com.x10.viriyah.services.delegate.SendSuccessEmail">
+        <bpmn:incoming>Flow_0791s37</bpmn:incoming>
+        <bpmn:outgoing>Flow_0xm89bs</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_0bf9t7q" sourceRef="Gateway_AsyncBeforeDelivery" targetRef="Gateway_0wogmd4" />
+      <bpmn:serviceTask id="Activity_1ipgrzh" name="Lookup Policy Information" camunda:class="com.x10.viriyah.services.delegate.LookupPolicyDelegate">
+        <bpmn:incoming>Flow_09ssvzo</bpmn:incoming>
+        <bpmn:outgoing>Flow_09kz64u</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_09ssvzo" sourceRef="Event_135falg" targetRef="Activity_1ipgrzh" />
+      <bpmn:sequenceFlow id="Flow_09kz64u" sourceRef="Activity_1ipgrzh" targetRef="GeneratePDFTask" />
+      <bpmn:sequenceFlow id="Flow_1b1u4s9" sourceRef="ProtectPDFTask" targetRef="Gateway_AsyncBeforeDelivery" />
+      <bpmn:textAnnotation id="TextAnnotation_1bewaf2">
+        <bpmn:text>Lookup Policy Info. for using in Delivery
+
+(Parallel Start during Pdf Generation Tasks)</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="Association_10mu3g2" sourceRef="Activity_1ipgrzh" targetRef="TextAnnotation_1bewaf2" />
+      <bpmn:textAnnotation id="TextAnnotation_0u661wt">
+        <bpmn:text>Steps:
+1. Sign with ProtectedPdf
+
+2. Create returnLink
+
+3. Sign with UnProtectedPdf
+
+ECM Data:
+- PolicySignProtected
+- PolicySignUnProtected
+- PolicySignUnProtectedNologo</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="Association_185uyuz" sourceRef="ProtectPDFTask" targetRef="TextAnnotation_0u661wt" />
+      <bpmn:textAnnotation id="TextAnnotation_1c7pdpu">
+        <bpmn:text>Asynchronous Call</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="Association_0d9h52p" sourceRef="Gateway_AsyncBeforeDelivery" targetRef="TextAnnotation_1c7pdpu" />
+      <bpmn:textAnnotation id="TextAnnotation_0clvfhe">
+        <bpmn:text>Steps:
+1. Generate PDF
+
+ECM Data:
+- PolicyUnSigned
+- PolicyUnSignedNologo</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="Association_0xtgfw9" sourceRef="GeneratePDFTask" targetRef="TextAnnotation_0clvfhe" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_0z24t8x" sourceRef="StartStartEvent" targetRef="CustomerBrokerTask" />
+    <bpmn:sequenceFlow id="Flow_0fd8o0u" sourceRef="Activity_1b84wmq" targetRef="ProcessSuccessEndEvent" />
+    <bpmn:boundaryEvent id="Event_0h2x6wu" attachedToRef="Activity_1b84wmq">
+      <bpmn:outgoing>Flow_0058x2t</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_101ocyr" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="SummaryLogTask" name="Summary Log" camunda:class="com.x10.viriyah.services.delegate.SummaryLogDelegate">
+      <bpmn:incoming>Flow_0058x2t</bpmn:incoming>
+      <bpmn:outgoing>Flow_0oirazi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0058x2t" sourceRef="Event_0h2x6wu" targetRef="SummaryLogTask" />
+    <bpmn:sequenceFlow id="Flow_0oirazi" sourceRef="SummaryLogTask" targetRef="ProcessSuccessEndEvent" />
+    <bpmn:businessRuleTask id="CustomerBrokerTask" name="Customer Broker" camunda:resultVariable="cusBroker" camunda:decisionRef="Decision_CustomerBroker" camunda:mapDecisionResult="singleResult">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="partner">${partner}</camunda:inputParameter>
+          <camunda:inputParameter name="subClass">${subClass}</camunda:inputParameter>
+          <camunda:inputParameter name="class">${class}</camunda:inputParameter>
+          <camunda:outputParameter name="returnLink">${cusBroker.returnLink}</camunda:outputParameter>
+          <camunda:outputParameter name="sendMail">${cusBroker.mail}</camunda:outputParameter>
+          <camunda:outputParameter name="sendOnline">${cusBroker.sendOnline}</camunda:outputParameter>
+          <camunda:outputParameter name="sendSms">${cusBroker.sendSms}</camunda:outputParameter>
+          <camunda:outputParameter name="sendEmail">${cusBroker.sendEmail}</camunda:outputParameter>
+          <camunda:outputParameter name="broker">${cusBroker.broker}</camunda:outputParameter>
+          <camunda:outputParameter name="insured">${cusBroker.insured}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0z24t8x</bpmn:incoming>
+      <bpmn:outgoing>Flow_17mw58l</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:sequenceFlow id="Flow_17mw58l" sourceRef="CustomerBrokerTask" targetRef="Activity_0yuvvt3" />
+    <bpmn:serviceTask id="Activity_0yuvvt3" name="Set Default Customer Broker &#10;(if not found)" camunda:class="com.x10.viriyah.services.delegate.SetDefaultCustomerBrokerDelegate">
+      <bpmn:incoming>Flow_17mw58l</bpmn:incoming>
+      <bpmn:outgoing>Flow_10hej5k</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0c972gh" sourceRef="Event_Settimeout" targetRef="Activity_Timeout" />
+    <bpmn:serviceTask id="Activity_Timeout" name="Execution Timeout Log" camunda:class="com.x10.viriyah.services.delegate.ExecuteTimeout">
+      <bpmn:incoming>Flow_0c972gh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0me4dlo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_Settimeout" name="Timeout (10 min.)" attachedToRef="Activity_1b84wmq">
+      <bpmn:outgoing>Flow_0c972gh</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0u5jz2c">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0me4dlo" sourceRef="Activity_Timeout" targetRef="ProcessSuccessEndEvent" />
+    <bpmn:sequenceFlow id="Flow_10hej5k" sourceRef="Activity_0yuvvt3" targetRef="Gateway_0wiwazp" />
+    <bpmn:exclusiveGateway id="Gateway_0wiwazp">
+      <bpmn:incoming>Flow_10hej5k</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hseaw9</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1do2han</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0hseaw9" name="Sync" sourceRef="Gateway_0wiwazp" targetRef="Activity_1b84wmq">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{returnLink == 'Y'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:task id="Activity_0ixsgr2" name="Async Activity" camunda:asyncBefore="true">
+      <bpmn:incoming>Flow_1do2han</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gwzze9</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0gwzze9" sourceRef="Activity_0ixsgr2" targetRef="Activity_1b84wmq" />
+    <bpmn:sequenceFlow id="Flow_1do2han" name="Async" sourceRef="Gateway_0wiwazp" targetRef="Activity_0ixsgr2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{returnLink != 'Y'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:textAnnotation id="TextAnnotation_1sj3vp9">
+      <bpmn:text>Async Before</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0wr6nvu" sourceRef="Activity_0ixsgr2" targetRef="TextAnnotation_1sj3vp9" />
+  </bpmn:process>
+  <bpmn:error id="Error_0ly2hcu" name="Error_1cgootc" errorCode="400" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Policy_Delivery">
+      <bpmndi:BPMNEdge id="Flow_1do2han_di" bpmnElement="Flow_1do2han">
+        <di:waypoint x="290" y="452" />
+        <di:waypoint x="290" y="490" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="295" y="463" width="30" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gwzze9_di" bpmnElement="Flow_0gwzze9">
+        <di:waypoint x="340" y="530" />
+        <di:waypoint x="370" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hseaw9_di" bpmnElement="Flow_0hseaw9">
+        <di:waypoint x="315" y="427" />
+        <di:waypoint x="370" y="427" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="330" y="409" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10hej5k_di" bpmnElement="Flow_10hej5k">
+        <di:waypoint x="220" y="427" />
+        <di:waypoint x="265" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0me4dlo_di" bpmnElement="Flow_0me4dlo">
+        <di:waypoint x="950" y="820" />
+        <di:waypoint x="950" y="840" />
+        <di:waypoint x="1870" y="840" />
+        <di:waypoint x="1870" y="427" />
+        <di:waypoint x="1848" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c972gh_di" bpmnElement="Flow_0c972gh">
+        <di:waypoint x="830" y="748" />
+        <di:waypoint x="830" y="780" />
+        <di:waypoint x="900" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17mw58l_di" bpmnElement="Flow_17mw58l">
+        <di:waypoint x="170" y="360" />
+        <di:waypoint x="170" y="387" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oirazi_di" bpmnElement="Flow_0oirazi">
+        <di:waypoint x="1630" y="780" />
+        <di:waypoint x="1830" y="780" />
+        <di:waypoint x="1830" y="445" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0058x2t_di" bpmnElement="Flow_0058x2t">
+        <di:waypoint x="1330" y="748" />
+        <di:waypoint x="1330" y="780" />
+        <di:waypoint x="1530" y="780" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fd8o0u_di" bpmnElement="Flow_0fd8o0u">
+        <di:waypoint x="1770" y="427" />
+        <di:waypoint x="1812" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z24t8x_di" bpmnElement="Flow_0z24t8x">
+        <di:waypoint x="170" y="208" />
+        <di:waypoint x="170" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartStartEvent">
+        <dc:Bounds x="152" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="148" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1pm5tx4_di" bpmnElement="ProcessSuccessEndEvent">
+        <dc:Bounds x="1812" y="409" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1788" y="385" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1b84wmq_di" bpmnElement="Activity_1b84wmq" isExpanded="true">
+        <dc:Bounds x="370" y="80" width="1400" height="650" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1bewaf2_di" bpmnElement="TextAnnotation_1bewaf2">
+        <dc:Bounds x="460" y="604" width="160" height="91" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0u661wt_di" bpmnElement="TextAnnotation_0u661wt">
+        <dc:Bounds x="640" y="120" width="225" height="166" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0clvfhe_di" bpmnElement="TextAnnotation_0clvfhe" bioc:stroke="rgb(229, 57, 53)" bioc:fill="rgb(255, 205, 210)">
+        <dc:Bounds x="465" y="250" width="150" height="96" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1c7pdpu_di" bpmnElement="TextAnnotation_1c7pdpu">
+        <dc:Bounds x="800" y="330" width="100" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0bf9t7q_di" bpmnElement="Flow_0bf9t7q">
+        <di:waypoint x="890" y="452" />
+        <di:waypoint x="890" y="650" />
+        <di:waypoint x="1210" y="650" />
+        <di:waypoint x="1210" y="452" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xm89bs_di" bpmnElement="Flow_0xm89bs">
+        <di:waypoint x="1530" y="427" />
+        <di:waypoint x="1602" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e54xg2_di" bpmnElement="Flow_0e54xg2">
+        <di:waypoint x="1330" y="452" />
+        <di:waypoint x="1330" y="519" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0791s37_di" bpmnElement="Flow_0791s37">
+        <di:waypoint x="1355" y="427" />
+        <di:waypoint x="1430" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14cu9p7_di" bpmnElement="Flow_14cu9p7">
+        <di:waypoint x="1235" y="427" />
+        <di:waypoint x="1305" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ycoabf_di" bpmnElement="Flow_1ycoabf">
+        <di:waypoint x="710" y="427" />
+        <di:waypoint x="730" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c8yd77_di" bpmnElement="Flow_1c8yd77">
+        <di:waypoint x="1100" y="310" />
+        <di:waypoint x="1210" y="310" />
+        <di:waypoint x="1210" y="402" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oitlag_di" bpmnElement="SendOnlineSequenceFlow">
+        <di:waypoint x="890" y="400" />
+        <di:waypoint x="890" y="310" />
+        <di:waypoint x="1000" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="926" y="292" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04g9phv_di" bpmnElement="Flow_04g9phv">
+        <di:waypoint x="1100" y="550" />
+        <di:waypoint x="1210" y="550" />
+        <di:waypoint x="1210" y="452" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17jno9j_di" bpmnElement="SendSmsSequenceFlow">
+        <di:waypoint x="890" y="452" />
+        <di:waypoint x="890" y="550" />
+        <di:waypoint x="1000" y="550" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="931" y="533" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c9fccc_di" bpmnElement="Flow_0c9fccc">
+        <di:waypoint x="1100" y="427" />
+        <di:waypoint x="1185" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00rgb2i_di" bpmnElement="SendEmailSequenceFlow">
+        <di:waypoint x="915" y="427" />
+        <di:waypoint x="1000" y="427" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="928" y="410" width="54" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09ssvzo_di" bpmnElement="Flow_09ssvzo">
+        <di:waypoint x="448" y="427" />
+        <di:waypoint x="490" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09kz64u_di" bpmnElement="Flow_09kz64u">
+        <di:waypoint x="590" y="427" />
+        <di:waypoint x="610" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b1u4s9_di" bpmnElement="Flow_1b1u4s9">
+        <di:waypoint x="830" y="427" />
+        <di:waypoint x="865" y="427" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_135falg_di" bpmnElement="Event_135falg">
+        <dc:Bounds x="412" y="409" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ojps2v_di" bpmnElement="SendPDFWithEmailTask">
+        <dc:Bounds x="1000" y="387" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oq4h3g_di" bpmnElement="SendPDFWithSMSTask">
+        <dc:Bounds x="1000" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dsenc3_di" bpmnElement="SendPDFWithOnlineTask">
+        <dc:Bounds x="1000" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1e55n5b_di" bpmnElement="Gateway_AsyncBeforeDelivery">
+        <dc:Bounds x="865" y="402" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1cqszvd_di" bpmnElement="Gateway_0wogmd4">
+        <dc:Bounds x="1185" y="402" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_03iff5p_di" bpmnElement="Gateway_03iff5p" isMarkerVisible="true">
+        <dc:Bounds x="1305" y="402" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xzoibw_di" bpmnElement="Event_1xzoibw">
+        <dc:Bounds x="1602" y="409" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ljk5k9_di" bpmnElement="Event_1sl2ebp">
+        <dc:Bounds x="1312" y="519" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yywk4n_di" bpmnElement="SendSuccessEmailTask">
+        <dc:Bounds x="1430" y="387" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_146yw7c_di" bpmnElement="ProtectPDFTask">
+        <dc:Bounds x="730" y="387" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ml2ctd_di" bpmnElement="GeneratePDFTask">
+        <dc:Bounds x="610" y="387" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qoj1od_di" bpmnElement="Activity_1ipgrzh">
+        <dc:Bounds x="490" y="387" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_10mu3g2_di" bpmnElement="Association_10mu3g2">
+        <di:waypoint x="540" y="467" />
+        <di:waypoint x="538" y="604" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_185uyuz_di" bpmnElement="Association_185uyuz">
+        <di:waypoint x="771" y="387" />
+        <di:waypoint x="747" y="286" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0xtgfw9_di" bpmnElement="Association_0xtgfw9">
+        <di:waypoint x="624" y="387" />
+        <di:waypoint x="588" y="346" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0d9h52p_di" bpmnElement="Association_0d9h52p">
+        <di:waypoint x="882" y="410" />
+        <di:waypoint x="862" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1ipxx8v_di" bpmnElement="SummaryLogTask">
+        <dc:Bounds x="1530" y="740" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ws4xr5_di" bpmnElement="CustomerBrokerTask">
+        <dc:Bounds x="120" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1siheez_di" bpmnElement="Activity_0yuvvt3">
+        <dc:Bounds x="120" y="387" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04t8m47_di" bpmnElement="Activity_Timeout">
+        <dc:Bounds x="900" y="740" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0wiwazp_di" bpmnElement="Gateway_0wiwazp" isMarkerVisible="true">
+        <dc:Bounds x="265" y="402" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ixsgr2_di" bpmnElement="Activity_0ixsgr2">
+        <dc:Bounds x="240" y="490" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1sj3vp9_di" bpmnElement="TextAnnotation_1sj3vp9">
+        <dc:Bounds x="140" y="630" width="99.99274099883856" height="29.991774608864603" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0p0nxs0_di" bpmnElement="Event_Settimeout">
+        <dc:Bounds x="812" y="712" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="787" y="693" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08tftee_di" bpmnElement="Event_0h2x6wu">
+        <dc:Bounds x="1312" y="712" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0wr6nvu_di" bpmnElement="Association_0wr6nvu">
+        <di:waypoint x="255" y="570" />
+        <di:waypoint x="203" y="630" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

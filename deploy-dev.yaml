@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  # database:
+  #   image: mcr.microsoft.com/mssql/server:2019-latest
+  #   container_name: camunda-database
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - SA_PASSWORD=p@ssw0rd
+  #     - MSSQL_PID=Developer
+  #   ports:
+  #     - "1434:1433"
+
+  camunda:
+    container_name: camunda2-engine
+    build: .
+    ports:
+      - "8082:8080"
+      - "2025:25"
+    extra_hosts:
+      - "vmail.viriyah.co.th:10.99.5.80"
+    volumes:
+      - ./config/application-dev.yaml:/usr/src/config/application.yaml
+    restart: always
+    # environment:
+    #   - DB_DRIVER=com.microsoft.sqlserver.jdbc.SQLServerDriver
+    #   - DB_URL=jdbc:sqlserver://0.0.0.0:1433;databaseName=Camunda
+    #   - DB_USERNAME=sa
+    #   - DB_PASSWORD=p@ssw0rd
+    #   - WAIT_FOR=database:1433

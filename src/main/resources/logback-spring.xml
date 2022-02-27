@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="console"  class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} | %level | camunda-policy | AppLog | %X{stepName:-service} | %X{transactionNo:-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx} | %X{policyNumber:-xxxx} --- %msg%n%throwable</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="async" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="console" />
+    </appender>
+
+    <!-- LOG everything at INFO level -->
+    <root level="info">
+        <appender-ref ref="async" />
+    </root>
+
+</configuration>

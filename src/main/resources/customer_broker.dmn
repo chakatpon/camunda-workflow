@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Definitions_CustomerBroker" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.4.0">
+  <decision id="Decision_CustomerBroker" name="Customer Broker">
+    <informationRequirement id="InformationRequirement_1kuo9v8">
+      <requiredInput href="#partner" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_15p5a29">
+      <requiredInput href="#subClass" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_1ol50d3">
+      <requiredInput href="#class" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0qnc7ef" hitPolicy="FIRST">
+      <input id="Input_1" label="Class" biodi:width="150">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text>class</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_0jrxquw">
+          <text>"ALL"</text>
+        </inputValues>
+      </input>
+      <input id="InputClause_0k4mm4g" label="Sub-Class" biodi:width="150">
+        <inputExpression id="LiteralExpression_0b04kmu" typeRef="string">
+          <text>subClass</text>
+        </inputExpression>
+        <inputValues id="UnaryTests_1eiqjmd">
+          <text>"ALL"</text>
+        </inputValues>
+      </input>
+      <input id="InputClause_14v6nl1" label="Partner" biodi:width="150">
+        <inputExpression id="LiteralExpression_03xp8ur" typeRef="string" expressionLanguage="feel">
+          <text>partner</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Insured" name="insured" typeRef="string" biodi:width="150">
+        <outputValues id="UnaryTests_0obpovt">
+          <text>"Y","N"</text>
+        </outputValues>
+      </output>
+      <output id="OutputClause_0wxtc0u" label="Broker" name="broker" typeRef="string" biodi:width="150">
+        <outputValues id="UnaryTests_0h4dmuv">
+          <text>"Y","N"</text>
+        </outputValues>
+      </output>
+      <output id="OutputClause_16aafbz" label="Email" name="sendEmail" typeRef="string" biodi:width="150">
+        <outputValues id="UnaryTests_09l712l">
+          <text>"Y","N"</text>
+        </outputValues>
+      </output>
+      <output id="OutputClause_1nwqnpj" label="SMS" name="sendSms" typeRef="string" biodi:width="150">
+        <outputValues id="UnaryTests_0qkelfx">
+          <text>"Y","N"</text>
+        </outputValues>
+      </output>
+      <output id="OutputClause_09o1lzx" label="Online" name="sendOnline" typeRef="string" biodi:width="150">
+        <outputValues id="UnaryTests_0z4704y">
+          <text>"Y","N"</text>
+        </outputValues>
+      </output>
+      <output id="OutputClause_0let8le" label="Mail" name="mail" typeRef="string" biodi:width="150">
+        <outputValues id="UnaryTests_1lhgt52">
+          <text>"Y","N"</text>
+        </outputValues>
+      </output>
+      <output id="OutputClause_0m23j5c" label="ReturnLink" name="returnLink" typeRef="string" />
+      <rule id="DecisionRule_11luzzj">
+        <inputEntry id="UnaryTests_07e5xs2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_06n9xxn">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1i72t2e">
+          <text>"BIGC"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1yoyhzl">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0q59eb7">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1bq2j47">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1ubjngy">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_04l2j0a">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1jl3rv9">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0cup4he">
+          <text>"N"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1gxb3je">
+        <inputEntry id="UnaryTests_0aigzir">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bzic9k">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03sr4ju">
+          <text>"NTB"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0pfmr0w">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0jcwp2i">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_05dwxff">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_15x36w7">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_18c9q9o">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0vwt8ij">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_06tmdxo">
+          <text>"N"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_12wv49o">
+        <inputEntry id="UnaryTests_0tll3w7">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_14u8poi">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1asuvrj">
+          <text>"SSW"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1nowabv">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0yp1h7d">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_02gdbar">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0y47rcn">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0kdwl2k">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0f7j3r2">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1am6y8y">
+          <text>"N"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0kzg7wo">
+        <inputEntry id="UnaryTests_0kqsty1">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0mg02v1">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0o2hqf3">
+          <text>"12122"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0fp620u">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1dicnp9">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0dz6dfu">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1y2r71m">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1kk5u6q">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0rm4xo9">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1p8xwpc">
+          <text>"N"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0m1zydt">
+        <inputEntry id="UnaryTests_0z1y8nn">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08iuxtp">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_01geht3">
+          <text>"15841"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0fxcpwh">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0ugvewg">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1qbcr1b">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0g7bbh1">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_05vvol5">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0x67y14">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1ridvuu">
+          <text>"N"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_04fuc5p">
+        <inputEntry id="UnaryTests_0jr9wnb">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0l78my8">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1sw9ob4">
+          <text>"02381"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0d6jxs7">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1ag0m6a">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_066vn23">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0srtc99">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0m6r3kf">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0frryyx">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1wiaxxy">
+          <text>"N"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0ji6ynf">
+        <inputEntry id="UnaryTests_000a234">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ef5p2t">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1p0f188">
+          <text>"16651"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0q9jwwr">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0k9ud31">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_10l0f7p">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1by7y60">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1re0322">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0vji8w5">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0z5dvj9">
+          <text>"N"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1y9nbtr">
+        <inputEntry id="UnaryTests_1p866j2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17dss8c">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1j4daa3">
+          <text>"16067"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_04st8hg">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1bi5hx5">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_13bu5la">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1gqb62c">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0ze3ano">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_07jqasm">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0q3tnoj">
+          <text>"Y"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0hipljv">
+        <inputEntry id="UnaryTests_02rxs99">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04hh7bj">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_14kk819">
+          <text>"12345"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_05rqj9h">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1j2q0sw">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_06sthjy">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_08dtdaj">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1ig7b7v">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0cestay">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0spfhe2">
+          <text>"N"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1m23w80">
+        <inputEntry id="UnaryTests_0qinha1">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zylc93">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ra87yt">
+          <text>"12765"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0tds0wv">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1moafh1">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1iha8z3">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1df29qa">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_11wh0dy">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_18ctayx">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_04fjgtg">
+          <text>"N"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_13t500i">
+        <inputEntry id="UnaryTests_03cxn0r">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_05itwr7">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_02ysfnv">
+          <text>"15897"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ozbww9">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0fqjusu">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0wx4d6x">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_17novzn">
+          <text>"Y"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_149vygn">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0ydi4wd">
+          <text>"N"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_15ivxl4">
+          <text>"Y"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="class" name="Class" />
+  <inputData id="subClass" name="Sub-Class" />
+  <inputData id="partner" name="Partner" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_CustomerBroker">
+        <dc:Bounds height="80" width="180" x="380" y="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_19kv053" dmnElementRef="class">
+        <dc:Bounds height="45" width="125" x="157" y="318" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_02u69yu" dmnElementRef="subClass">
+        <dc:Bounds height="45" width="125" x="408" y="319" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_0rhq19w" dmnElementRef="partner">
+        <dc:Bounds height="45" width="125" x="667" y="318" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0zd3ux5" dmnElementRef="InformationRequirement_1kuo9v8">
+        <di:waypoint x="730" y="318" />
+        <di:waypoint x="515" y="180" />
+        <di:waypoint x="515" y="160" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="DMNEdge_0xfc5k5" dmnElementRef="InformationRequirement_15p5a29">
+        <di:waypoint x="471" y="319" />
+        <di:waypoint x="470" y="180" />
+        <di:waypoint x="470" y="160" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="DMNEdge_19rhqit" dmnElementRef="InformationRequirement_1ol50d3">
+        <di:waypoint x="220" y="318" />
+        <di:waypoint x="425" y="180" />
+        <di:waypoint x="425" y="160" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
